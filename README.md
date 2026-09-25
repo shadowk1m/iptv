@@ -11,6 +11,25 @@ Collected 2026-09-25. For personal learning use only.
 | `shaanxi-mobile-cdn-catchup-kodi.m3u` | 251 | Same, with Kodi-style catch-up tokens for PVR IPTV Simple Client. |
 | `shaanxi-mobile-xian-gitv.m3u` | 160 | Xi'an Mobile GITV platform (`211.137.115.110:8080`). Intranet-only: works on China Mobile **home broadband** in Xi'an, NOT on cellular/other ISPs. Raw list in `raw/xian-gitv.txt`. |
 
+## Files
+
+```
+.
+├── README.md
+├── merge.py                        # fold raw/lingbaoboy-tv2.m3u into the base list (priority)
+├── make-catchup.py                 # write the two catch-up variants from the merged list
+├── scan.py                         # HTTP-test every stream URL → scan-results.csv
+├── scan-results.csv                # last audit: URL, HTTP code, final IP, status
+├── raw/
+│   ├── sn-cdn.txt                  # original Shaanxi CDN channel dump
+│   ├── xian-gitv.txt               # original Xi'an GITV channel dump
+│   └── lingbaoboy-tv2.m3u          # lingbaoboy/sxydiptv upstream (stable source)
+├── shaanxi-mobile-cdn.m3u          # merged master list (252 channels)
+├── shaanxi-mobile-cdn-catchup.m3u  # + catch-up attrs, `${(b)}/${(e)}` style
+├── shaanxi-mobile-cdn-catchup-kodi.m3u  # + catch-up attrs, Kodi tokens
+└── shaanxi-mobile-xian-gitv.m3u    # Xi'an GITV intranet list (unchanged)
+```
+
 ## Players
 
 - **Android TV / box**: TiviMate, DIYP/百川
