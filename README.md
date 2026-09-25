@@ -30,6 +30,14 @@ Preferred source, ~220 KB gzip and reliable; the playlist header already adverti
 
 All m3u `tvg-logo` URLs use a working host (`epg.112114.xyz` or the fanmingming GitHub mirror). After swapping the EPG URL in your player, reload the playlist/EPG (TiviMate: *Settings → Playlists → [list] → OK*; Kodi: *Settings → PVR & Live TV → Guide → Clear cache*) — the guide repopulates within a minute.
 
+## Reachability check
+
+```
+python3 scan.py
+```
+
+Tests every stream URL in `shaanxi-mobile-cdn.m3u` and `shaanxi-mobile-xian-gitv.m3u`, classifies them as `reachable` (HTTP 200 anywhere), `intranet` (CMCC IP blocks — may or may not play depending on the operator), or `dead`, and writes `scan-results.csv`. Useful as a periodic audit; the heuristics live in `scan.py` (`CMCC_NETS`, `KNOWN_INTRANET_HOSTS`, `TIMEOUT_S`).
+
 ## Point-in-time replay (回看) for the CDN list
 
 The CDN server keeps **7 days** of every channel. Two ways to watch a past moment:
