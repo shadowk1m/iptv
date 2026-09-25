@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Generate shaanxi-mobile-cdn-catchup.m3u from shaanxi-mobile-cdn.m3u.
+"""Generate shaanxi-mobile-cdn-catchup*.m3u from shaanxi-mobile-cdn.m3u.
 
 Adds per-channel catch-up (回看) attributes so players with an EPG offer
-guide-based point-in-time replay. Each PLTV channel gets a catchup-source
-template pointing at the TVOD endpoint; the player substitutes:
+guide-based point-in-time replay. Each PLTV channel (on any CMCC host) gets a
+catchup-source template pointing at the TVOD endpoint; the player substitutes:
 
     ${(b)yyyyMMddHHmmss}  programme start time (from the EPG)
     ${(e)yyyyMMddHHmmss}  programme end time   (from the EPG)
@@ -12,8 +12,7 @@ This `${(b)...}/${(e)...}` convention is understood by TiviMate, DIYP/百川,
 APTV and TVBox-family players. Kodi's IPTV Simple Client uses its own
 specifiers ({utc}/{end} with format strings) — the -kodi variant below.
 
-Also rewrites tvg-logo URLs from the dead `live.fanmingming.com` host to the
-`fanmingming/live` GitHub mirror (same files, see README).
+Run merge.py first to fold in raw/lingbaoboy-tv2.m3u.
 """
 
 import re
@@ -26,7 +25,7 @@ DEAD_HOST = "https://live.fanmingming.com/"
 LIVE_HOST = "https://gh-proxy.org/raw.githubusercontent.com/fanmingming/live/main/"
 
 URL_RE = re.compile(
-    r"^http://dbiptv\.sn\.chinamobile\.com/PLTV/([^/]+)/([^/]+)/([^/]+)/index\.m3u8$"
+    r"^(https?://[^/]+)/PLTV/([^/]+)/([^/]+)/([^/]+)/index\.m3u8$"
 )
 
 # Time-window templates understood by each family of players. The server's
@@ -40,8 +39,8 @@ STYLES = {
 
 
 def extinf_with_catchup(extinf: str, url: str, playseek: str) -> str:
-    icpid, trans, chan = URL_RE.match(url).groups()
-    tvod = f"http://dbiptv.sn.chinamobile.com/TVOD/{icpid}/{trans}/{chan}/index.m3u8"
+    host, icpid, trans, chan = URL_RE.match(url).groups()
+    tvod = f"{host}/TVOD/{icpid}/{trans}/{chan}/index.m3u8"
     attrs = (
         'catchup="default" '
         f'catchup-source="{tvod}?playseek={playseek}" '
