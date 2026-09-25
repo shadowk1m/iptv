@@ -26,7 +26,7 @@ https://gh-proxy.org/raw.githubusercontent.com/fanmingming/live/main/e.xml
 
 `live.fanmingming.com` (the project's own host) is currently unreachable — the same files live in the `fanmingming/live` GitHub repo. Alternatives if the mirror is slow: `https://raw.githubusercontent.com/fanmingming/live/main/e.xml` or `https://fastly.jsdelivr.net/gh/fanmingming/live@main/e.xml`.
 
-The m3u files still carry `tvg-logo` links to the dead domain; `make-catchup.py` rewrites them to the working mirror in the generated lists. After swapping the EPG URL in your player, reload the playlist/EPG (TiviMate: *Settings → Playlists → [list] → OK*; Kodi: *Settings → PVR & Live TV → Guide → Clear cache*) — the guide repopulates within a minute.
+All m3u `tvg-logo` URLs use the same mirror. After swapping the EPG URL in your player, reload the playlist/EPG (TiviMate: *Settings → Playlists → [list] → OK*; Kodi: *Settings → PVR & Live TV → Guide → Clear cache*) — the guide repopulates within a minute.
 
 ## Point-in-time replay (回看) for the CDN list
 
