@@ -21,24 +21,20 @@ Collected 2026-09-25. For personal learning use only.
 
 ## Host locally (Docker)
 
-Serve the playlists from any Docker host on your LAN:
+Run the prebuilt image on any Docker host in your LAN — no repo checkout needed:
 
 ```bash
-git clone git@github.com:shadowk1m/iptv.git && cd iptv
-docker compose up -d --build
+docker compose up -d        # pulls ghcr.io/shadowk1m/iptv:latest
 ```
 
-Two ways to run:
+Only `compose.yaml` is required on the host (it can live anywhere). CI builds and publishes the image automatically whenever playlists change; refresh with `docker compose pull && docker compose up -d`.
 
-- **Image (baked)** — `Dockerfile` copies all playlists + `nginx.conf` into a self-contained `iptv:latest` image. A GitHub Action (`push to main` or manual `workflow_dispatch`) builds it and pushes to **GHCR**, so your host needs no repo or build step:
+Prefer serving freshly regenerated playlists without a rebuild? Clone the repo on the host and add a bind mount override to `compose.yaml`:
 
-  ```bash
-  docker pull ghcr.io/shadowk1m/iptv:latest
-  docker run -d -p 8080:80 --name iptv ghcr.io/shadowk1m/iptv:latest
-  ```
-
-  Rebuild happens automatically whenever playlists change.
-- **Live bind-mount** — the `compose.yaml` mounts `./` over `/srv/iptv` (read-only), so after regenerating (`make-catchup.py` / `convert.py`) new content is served immediately, no rebuild. Comment out the `volumes:` block to fall back to the baked copies.
+```yaml
+    volumes:
+      - ./:/srv/iptv:ro
+```
 
 Short, TV-remote-friendly URLs on port **8080**:
 

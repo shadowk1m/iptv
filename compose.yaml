@@ -1,22 +1,31 @@
-# Serve the playlists on your LAN Docker host.
+# Run the prebuilt playlist image from GHCR — no build, no repo checkout.
+# CI rebuilds & republishes the image whenever playlists change.
 #
-#   docker compose up -d --build
+#   docker compose up -d
+#   docker compose pull && docker compose up -d     # refresh to latest
 #
-# Then point your player at short URLs, e.g.:
+# Short URLs on port 8080 (point your player here):
 #   http://<host-ip>:8080/iptv.txt
+#   http://<host-ip>:8080/iptv2.txt
+#   http://<host-ip>:8080/iptv.m3u
 #   http://<host-ip>:8080/catchup.m3u
+#   http://<host-ip>:8080/kodi.m3u
+#   http://<host-ip>:8080/gitv.txt | /gitv2.txt | /gitv.m3u
 #
-# Builds the iptv image (Dockerfile bakes the playlists in). The ./ bind
-# mount below is OPTIONAL — comment it out to use the baked-in copies, or
-# keep it to serve regenerated playlists without rebuilding the image.
+# Optional: to serve locally-regenerated playlists without rebuilding the
+# image, clone the repo on this host and add:
+#     volumes:
+#       - ./:/srv/iptv:ro
 
 services:
   iptv:
-    build: .
-    image: iptv:latest
+    image: ghcr.io/shadowk1m/iptv:latest
     container_name: iptv
     ports:
       - "8080:80"
-    volumes:
-      - ./:/srv/iptv:ro
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/iptv.txt"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
