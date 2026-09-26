@@ -1,0 +1,21 @@
+# Serve the playlists on your LAN Docker host.
+#
+#   docker compose up -d
+#
+# Then point your player at short URLs, e.g.:
+#   http://<host-ip>:8080/iptv.txt
+#   http://<host-ip>:8080/catchup.m3u
+#
+# Files are mounted read-only, so regenerating them (make-catchup.py /
+# convert.py) shows up immediately — no rebuild or restart needed.
+
+services:
+  iptv:
+    image: nginx:alpine
+    container_name: iptv
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/srv/iptv:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped

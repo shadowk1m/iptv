@@ -19,6 +19,28 @@ Collected 2026-09-25. For personal learning use only.
 - **M3U/M3U8** (`.m3u`) — universal; use for TiviMate, APTV, Kodi, VLC, IINA.
 - **DIYP/百川 TXT** (`.txt`) — `频道名,URL` per line; used by DIYP, 百川, PotPlayer and many Chinese set-top boxes. The grouped variant adds `组名,#genre#` header lines (TVBox/DIYP group syntax).
 
+## Host locally (Docker)
+
+Serve the playlists from any Docker host on your LAN:
+
+```bash
+git clone git@github.com:shadowk1m/iptv.git && cd iptv
+docker compose up -d
+```
+
+Files are mounted read-only, so after regenerating them (`make-catchup.py` / `convert.py`) the new content is served immediately — no rebuild needed. Short, TV-remote-friendly URLs on port **8080**:
+
+| URL | File |
+|-----|------|
+| `http://<host-ip>:8080/iptv.txt` | flat DIYP txt |
+| `http://<host-ip>:8080/iptv2.txt` | grouped DIYP txt |
+| `http://<host-ip>:8080/iptv.m3u` | master m3u |
+| `http://<host-ip>:8080/catchup.m3u` | catch-up m3u (TiviMate/DIYP/APTV) |
+| `http://<host-ip>:8080/kodi.m3u` | catch-up m3u (Kodi tokens) |
+| `http://<host-ip>:8080/gitv.txt` / `gitv2.txt` / `gitv.m3u` | Xi'an GITV variants |
+
+`nginx.conf` restricts serving to `.txt`/`.m3u` only — scripts, `.git/` and `raw/` return 404.
+
 ## Files
 
 ```
