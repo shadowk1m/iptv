@@ -30,7 +30,14 @@ docker compose up -d --build
 
 Two ways to run:
 
-- **Image (baked)** — `Dockerfile` copies all playlists + `nginx.conf` into a self-contained `iptv:latest` image. Great for a host that shouldn't hold the repo: `docker run -d -p 8080:80 --name iptv iptv:latest`. Rebuild to pick up regenerated playlists.
+- **Image (baked)** — `Dockerfile` copies all playlists + `nginx.conf` into a self-contained `iptv:latest` image. A GitHub Action (`push to main` or manual `workflow_dispatch`) builds it and pushes to **GHCR**, so your host needs no repo or build step:
+
+  ```bash
+  docker pull ghcr.io/shadowk1m/iptv:latest
+  docker run -d -p 8080:80 --name iptv ghcr.io/shadowk1m/iptv:latest
+  ```
+
+  Rebuild happens automatically whenever playlists change.
 - **Live bind-mount** — the `compose.yaml` mounts `./` over `/srv/iptv` (read-only), so after regenerating (`make-catchup.py` / `convert.py`) new content is served immediately, no rebuild. Comment out the `volumes:` block to fall back to the baked copies.
 
 Short, TV-remote-friendly URLs on port **8080**:
