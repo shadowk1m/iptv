@@ -25,10 +25,15 @@ Serve the playlists from any Docker host on your LAN:
 
 ```bash
 git clone git@github.com:shadowk1m/iptv.git && cd iptv
-docker compose up -d
+docker compose up -d --build
 ```
 
-Files are mounted read-only, so after regenerating them (`make-catchup.py` / `convert.py`) the new content is served immediately — no rebuild needed. Short, TV-remote-friendly URLs on port **8080**:
+Two ways to run:
+
+- **Image (baked)** — `Dockerfile` copies all playlists + `nginx.conf` into a self-contained `iptv:latest` image. Great for a host that shouldn't hold the repo: `docker run -d -p 8080:80 --name iptv iptv:latest`. Rebuild to pick up regenerated playlists.
+- **Live bind-mount** — the `compose.yaml` mounts `./` over `/srv/iptv` (read-only), so after regenerating (`make-catchup.py` / `convert.py`) new content is served immediately, no rebuild. Comment out the `volumes:` block to fall back to the baked copies.
+
+Short, TV-remote-friendly URLs on port **8080**:
 
 | URL | File |
 |-----|------|
